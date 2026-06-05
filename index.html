@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MathSci Academy</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ONBOARDING MODAL -->
+<div class="modal-overlay" id="onboarding-overlay" style="display:none">
+  <div class="modal-box">
+    <div class="modal-title">Welcome to MathSci Academy</div>
+    <div class="modal-sub">Mathematics for Science — from foundations to advanced mastery. Let's set up your profile to personalise your learning journey.</div>
+    <input class="modal-input" id="onboard-name" placeholder="Your name" maxlength="40">
+    <div style="font-size:11.5px;color:var(--muted);margin-bottom:10px">Choose your avatar</div>
+    <div class="avatar-row" id="onboard-avatars">
+      <div class="avatar-chip selected" data-idx="0" onclick="selectAvatar(this,0)">🦁</div>
+      <div class="avatar-chip" data-idx="1" onclick="selectAvatar(this,1)">🦊</div>
+      <div class="avatar-chip" data-idx="2" onclick="selectAvatar(this,2)">🐺</div>
+      <div class="avatar-chip" data-idx="3" onclick="selectAvatar(this,3)">🦅</div>
+      <div class="avatar-chip" data-idx="4" onclick="selectAvatar(this,4)">🐉</div>
+      <div class="avatar-chip" data-idx="5" onclick="selectAvatar(this,5)">🌟</div>
+      <div class="avatar-chip" data-idx="6" onclick="selectAvatar(this,6)">⚡</div>
+      <div class="avatar-chip" data-idx="7" onclick="selectAvatar(this,7)">🔥</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" onclick="completeOnboarding()">Start learning →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<div class="app">
+
+  <!-- ═══════════ SIDEBAR ═══════════ -->
+  <aside class="sidebar">
+
+    <div class="logo">
+      <div class="logo-mark">Math<span>Sci</span></div>
+      <div class="logo-sub">Academy · Mathematics for Science</div>
+    </div>
+
+    <nav class="nav-section">
+      <div class="nav-section-label">Overview</div>
+      <button class="nav-item active" data-screen="dashboard" onclick="showScreen('dashboard')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/>
+          <rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/>
+        </svg>
+        Dashboard
+      </button>
+      <button class="nav-item" data-screen="analytics" onclick="showScreen('analytics')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <polyline points="1,12 5,7 8,9 12,4 15,4"/><line x1="15" y1="4" x2="15" y2="12"/><line x1="1" y1="12" x2="15" y2="12"/>
+        </svg>
+        Analytics
+      </button>
+      <button class="nav-item" data-screen="badges" onclick="showScreen('badges')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="8" cy="6" r="4"/><path d="M4 10 L2 15 L8 13 L14 15 L12 10"/>
+        </svg>
+        Badges
+        <span class="badge-count" id="nav-badge-count">0</span>
+      </button>
+      <button class="nav-item" data-screen="certificates" onclick="showScreen('certificates')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="1" y="2" width="14" height="10" rx="1.5"/><line x1="4" y1="6" x2="12" y2="6"/>
+          <line x1="4" y1="9" x2="9" y2="9"/><circle cx="12" cy="13" r="2"/>
+        </svg>
+        Certificates
+      </button>
+      <button class="nav-item" data-screen="settings" onclick="showScreen('settings')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="8" cy="8" r="2.5"/>
+          <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3"/>
+        </svg>
+        Settings
+      </button>
+    </nav>
+
+    <nav class="nav-section">
+      <div class="nav-section-label">Curriculum</div>
+      <div id="stage-tree"></div>
+    </nav>
+
+    <div id="sidebar-footer" class="sidebar-footer"></div>
+  </aside>
+
+  <!-- ═══════════ MAIN CONTENT ═══════════ -->
+  <main class="main-content">
+
+    <!-- DASHBOARD -->
+    <div id="screen-dashboard" class="screen">
+      <div style="margin-bottom:28px">
+        <div id="dash-greeting" style="font-family:'Syne',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.4px;margin-bottom:6px"></div>
+        <div style="font-size:14px;color:var(--muted)">Pick up where you left off, or start a new stage below.</div>
+      </div>
+      <div class="stats-grid" id="dash-stats"></div>
+      <div class="section-label">Your stages</div>
+      <div class="stage-grid" id="dash-stage-grid"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="card card-pad">
+          <div class="section-label">7-day activity</div>
+          <div id="dash-activity"></div>
+        </div>
+        <div class="card card-pad">
+          <div class="section-label">Weak topics</div>
+          <div id="dash-weak"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAGE OVERVIEW -->
+    <div id="screen-stage-overview" class="screen">
+      <div id="stage-overview-content"></div>
+    </div>
+
+    <!-- LESSON -->
+    <div id="screen-lesson" class="screen">
+      <div id="lesson-content"></div>
+    </div>
+
+    <!-- EXAM -->
+    <div id="screen-exam" class="screen">
+      <div id="exam-content"></div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="screen-results" class="screen">
+      <div id="results-content"></div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div id="screen-analytics" class="screen">
+      <div class="page-title">Analytics</div>
+      <div class="page-sub">Your full learning history, performance trends, and weak areas.</div>
+      <div id="analytics-content"></div>
+    </div>
+
+    <!-- BADGES -->
+    <div id="screen-badges" class="screen">
+      <div class="page-title">Badges</div>
+      <div class="page-sub">Earn badges by hitting milestones. Each badge awards bonus XP.</div>
+      <div id="badges-content"></div>
+    </div>
+
+    <!-- CERTIFICATES -->
+    <div id="screen-certificates" class="screen">
+      <div class="page-title">Certificates</div>
+      <div class="page-sub">Pass the stage exam with ≥ 75% to unlock each certificate. Download as PNG.</div>
+      <div id="certs-content"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="screen-settings" class="screen">
+      <div class="page-title">Settings</div>
+      <div class="page-sub">Manage your profile and preferences.</div>
+      <div class="card card-pad" style="margin-bottom:16px">
+        <div class="section-label" style="margin-bottom:14px">Profile</div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Display name</div>
+          <input class="modal-input" id="settings-name" style="margin-bottom:0" maxlength="40">
+        </div>
+        <div style="margin-bottom:16px">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Avatar</div>
+          <div class="avatar-row" id="settings-avatars"></div>
+        </div>
+        <button class="btn-primary" onclick="saveSettings()">Save changes</button>
+      </div>
+      <div class="card card-pad" style="margin-bottom:16px">
+        <div class="section-label" style="margin-bottom:14px">Preferences</div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">Sound effects</div>
+            <div class="setting-sub">Play audio on XP gain and badge awards</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggle-sound" onchange="saveSettings()">
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+      </div>
+      <div class="card card-pad">
+        <div class="section-label" style="margin-bottom:14px">Danger zone</div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">Reset all progress</div>
+            <div class="setting-sub">Permanently delete all lessons, exams, XP, and badges</div>
+          </div>
+          <button class="btn-danger" onclick="confirmReset()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Scripts: order matters -->
+<script src="data/curriculum.js"></script>
+<script src="js/state.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+  // Update badge count in nav after init
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      const el = document.getElementById('nav-badge-count');
+      if (el && typeof STATE !== 'undefined') el.textContent = STATE.badges.length;
+    }, 200);
+  });
+</script>
+</body>
+</html>
